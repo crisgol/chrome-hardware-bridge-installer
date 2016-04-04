@@ -5,13 +5,13 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "Chrome Hardware Extension Host"
+Name "Chrome Hardware Extension"
 
 ; The file to write
-OutFile "Chrome Hardware Extension Host Setup.exe"
+OutFile "Chrome Hardware Extension Setup.exe"
 
 ; The default installation directory
-InstallDir "$PROGRAMFILES\Chrome Hardware Extension Host"
+InstallDir "$PROGRAMFILES\Chrome Hardware Extension"
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
@@ -44,13 +44,13 @@ Section "Core (required)"
   ExecWait "$INSTDIR\host\install_host.bat"
   
   ; Write the installation path into the registry
-  WriteRegStr HKLM "SOFTWARE\Chrome Hardware Extension Host" "Install_Dir" "$INSTDIR"
+  WriteRegStr HKLM "SOFTWARE\Chrome Hardware Extension" "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension Host" "DisplayName" "Chrome Hardware Extension Host"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension Host" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension Host" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension Host" "NoRepair" 1
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "DisplayName" "Chrome Hardware Extension"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "NoModify" 1
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
   
 SectionEnd
@@ -97,6 +97,29 @@ Section "wkhtmltopdf"
   ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$PROGRAMFILES\wkhtmltopdf\bin"
 SectionEnd
 
+Section "Google Chrome"
+  ; Set output path to the installation directory.
+  SetOutPath $TEMP
+  
+  ; Put file there
+  File "dist\googlechromestandaloneenterprise.msi"
+
+  ExecWait "msiexec /i googlechromestandaloneenterprise.msi"
+SectionEnd
+
+Section "Chrome Extension"
+  !define PRODUCT_VERSION "1.0.0"
+  !define CRXNAME "fnfkcaeloalplnglklappfjfjeafakeo_main.crx"
+  !define CRXID "fnfkcaeloalplnglklappfjfjeafakeo"
+
+  SetOutPath "$INSTDIR\app"
+  File "app\${CRXNAME}"
+  WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\${CRXNAME}"
+  WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "version"     "${PRODUCT_VERSION}"
+  WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\app\${CRXNAME}"
+  WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "version" "${PRODUCT_VERSION}"
+SectionEnd
+
 ;--------------------------------
 
 ; Uninstaller
@@ -104,17 +127,19 @@ SectionEnd
 Section "Uninstall"
   
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension Host"
-  DeleteRegKey HKLM "SOFTWARE\Chrome Hardware Extension Host"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension"
+  DeleteRegKey HKLM "SOFTWARE\Chrome Hardware Extension"
 
   ExecWait "$INSTDIR\host\uninstall_host.bat"
   
   ; Remove files and uninstaller
   Delete "$INSTDIR\host\*.*"
+  Delete "$INSTDIR\app\*.*"
   Delete "$INSTDIR\*.*"  
 
   ; Remove directories used
   RMDir "$INSTDIR\host"
+  RMDir "$INSTDIR\app"
   RMDir "$INSTDIR"  
 
 SectionEnd
