@@ -61,7 +61,7 @@ Section "Host (required)"
   
 SectionEnd
 
-SubSection "Python and Dependencies"
+SubSection /e "Python and Dependencies"
   Section "Python 2.7.11"
     SectionIn 1 2 3
   
@@ -113,7 +113,7 @@ SubSection "Python and Dependencies"
   SectionEnd
 SubSectionEnd
   
-SubSection "Google Chrome and Extension"
+SubSection /e "Google Chrome and Extension"
 
   Section "Google Chrome"
     SectionIn 1
