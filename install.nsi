@@ -29,7 +29,13 @@ UninstPage instfiles
 
 ;--------------------------------
 
-Section "Core (required)"
+InstType "Full Installation"
+InstType "Host, Dependencies and Extension Only"
+InstType "Host and Dependencies Only"
+InstType "Host Only"
+
+
+Section "Host (required)"
 
   SectionIn RO
   
@@ -55,70 +61,87 @@ Section "Core (required)"
   
 SectionEnd
 
-Section "Python 2.7"
-  ; Set output path to the installation directory.
-  SetOutPath $TEMP
+SubSection "Python and Dependencies"
+  Section "Python 2.7.11"
+    SectionIn 1 2 3
   
-  ; Put file there
-  File "dist\python-2.7.11.msi"
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\python-2.7.11.msi"
 
-  ExecWait "msiexec /i python-2.7.11.msi /qb ADDLOCAL=ALL"
-SectionEnd
+    ExecWait "msiexec /i python-2.7.11.msi /qb ADDLOCAL=ALL"
+  SectionEnd
 
-Section "Python pypiwin32"
-  ; Set output path to the installation directory.
-  SetOutPath $TEMP
+  Section "Python pypiwin32"
+    SectionIn 1 2 3
   
-  ; Put file there
-  File "dist\pypiwin32-219-cp27-none-win32.whl"
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\pypiwin32-219-cp27-none-win32.whl"
 
-  ExecWait "C:\Python27\Scripts\pip.exe install pypiwin32-219-cp27-none-win32.whl"
-SectionEnd
+    ExecWait "C:\Python27\Scripts\pip.exe install pypiwin32-219-cp27-none-win32.whl"
+  SectionEnd
 
-Section "Python pdfkit"
-  ; Set output path to the installation directory.
-  SetOutPath $TEMP
+  Section "Python pdfkit"
+    SectionIn 1 2 3
   
-  ; Put file there
-  File "dist\pdfkit-0.5.0-py2-none-any.whl"
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\pdfkit-0.5.0-py2-none-any.whl"
 
-  ExecWait "C:\Python27\Scripts\pip.exe install pdfkit-0.5.0-py2-none-any.whl"
-SectionEnd
+    ExecWait "C:\Python27\Scripts\pip.exe install pdfkit-0.5.0-py2-none-any.whl"
+  SectionEnd
 
-Section "wkhtmltopdf"
-  ; Set output path to the installation directory.
-  SetOutPath $TEMP
+  Section "wkhtmltopdf"
+    SectionIn 1 2 3
   
-  ; Put file there
-  File "dist\wkhtmltox-0.12.3.2_msvc2013-win32.exe"
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\wkhtmltox-0.12.3.2_msvc2013-win32.exe"
 
-  ExecWait "$TEMP\wkhtmltox-0.12.3.2_msvc2013-win32.exe /S"
+    ExecWait "$TEMP\wkhtmltox-0.12.3.2_msvc2013-win32.exe /S"
+    
+    ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$PROGRAMFILES\wkhtmltopdf\bin"
+  SectionEnd
+SubSectionEnd
   
-  ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$PROGRAMFILES\wkhtmltopdf\bin"
-SectionEnd
+SubSection "Google Chrome and Extension"
 
-Section "Google Chrome"
-  ; Set output path to the installation directory.
-  SetOutPath $TEMP
+  Section "Google Chrome"
+    SectionIn 1
   
-  ; Put file there
-  File "dist\googlechromestandaloneenterprise.msi"
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\googlechromestandaloneenterprise.msi"
 
-  ExecWait "msiexec /i googlechromestandaloneenterprise.msi"
-SectionEnd
+    ExecWait "msiexec /i googlechromestandaloneenterprise.msi"
+  SectionEnd
 
-Section "Chrome Extension"
-  !define PRODUCT_VERSION "1.0.0"
-  !define CRXNAME "fnfkcaeloalplnglklappfjfjeafakeo_main.crx"
-  !define CRXID "fnfkcaeloalplnglklappfjfjeafakeo"
+  Section "Chrome Extension"
+    SectionIn 1 2
+  
+    !define PRODUCT_VERSION "1.0.0"
+    !define CRXNAME "fnfkcaeloalplnglklappfjfjeafakeo_main.crx"
+    !define CRXID "fnfkcaeloalplnglklappfjfjeafakeo"
 
-  SetOutPath "$INSTDIR\app"
-  File "app\${CRXNAME}"
-  WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\${CRXNAME}"
-  WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "version"     "${PRODUCT_VERSION}"
-  WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\app\${CRXNAME}"
-  WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "version" "${PRODUCT_VERSION}"
-SectionEnd
+    SetOutPath "$INSTDIR\app"
+    File "app\${CRXNAME}"
+    WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\${CRXNAME}"
+    WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "version"     "${PRODUCT_VERSION}"
+    WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\app\${CRXNAME}"
+    WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "version" "${PRODUCT_VERSION}"
+  SectionEnd
+SubSectionEnd
 
 ;--------------------------------
 
@@ -130,6 +153,11 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension"
   DeleteRegKey HKLM "SOFTWARE\Chrome Hardware Extension"
 
+  DeleteRegValue HKLM "Software\Google\Chrome\Extensions\${CRXID}" "path"
+  DeleteRegValue HKLM "Software\Google\Chrome\Extensions\${CRXID}" "version"
+  DeleteRegValue HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "path"
+  DeleteRegValue HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "version"
+  
   ExecWait "$INSTDIR\host\uninstall_host.bat"
   
   ; Remove files and uninstaller
