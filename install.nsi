@@ -74,6 +74,30 @@ SubSection /e "Python and Dependencies"
     ExecWait "msiexec /i python-2.7.11.msi /qb ADDLOCAL=ALL"
   SectionEnd
 
+  Section "Python pip"
+    SectionIn 1 2 3
+  
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\pip-8.1.1-py2.py3-none-any.whl"
+
+    ExecWait "C:\Python27\python -m pip install --upgrade pip-8.1.1-py2.py3-none-any.whl"
+  SectionEnd
+  
+  Section "Python wxpython"
+    SectionIn 1 2 3
+  
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\wxPython_Phoenix-3.0.3.dev1964+f780b21-cp27-cp27m-win32.whl"
+
+    ExecWait "C:\Python27\Scripts\pip.exe install wxPython_Phoenix-3.0.3.dev1964+f780b21-cp27-cp27m-win32.whl"
+  SectionEnd
+  
   Section "Python pypiwin32"
     SectionIn 1 2 3
   
