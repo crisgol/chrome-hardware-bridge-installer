@@ -138,7 +138,6 @@ SubSection /e "Python and Dependencies"
 SubSectionEnd
   
 SubSection /e "Google Chrome and Extension"
-
   Section "Google Chrome"
     SectionIn 1
   
@@ -167,6 +166,19 @@ SubSection /e "Google Chrome and Extension"
   SectionEnd
 SubSectionEnd
 
+SubSection /e "Adobe Reader"
+  Section "Adobe Reader XI"
+    SectionIn 1
+  
+    ; Set output path to the installation directory.
+    SetOutPath $TEMP
+    
+    ; Put file there
+    File "dist\AdbeRdr11000_zh_TW.exe"
+
+    ExecWait "AdbeRdr11000_zh_TW.exe /msi EULA_ACCEPT=YES UPDATE_MODE=0 /qn"
+  SectionEnd
+SubSectionEnd
 ;--------------------------------
 
 ; Uninstaller
