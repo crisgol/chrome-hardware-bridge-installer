@@ -5,13 +5,13 @@
 ;--------------------------------
 
 ; The name of the installer
-Name "Chrome Hardware Extension"
+Name "Chrome Hardware Bridge"
 
 ; The file to write
-OutFile "Chrome Hardware Extension Setup.exe"
+OutFile "Chrome Hardware Bridge Setup.exe"
 
 ; The default installation directory
-InstallDir "$PROGRAMFILES\Chrome Hardware Extension"
+InstallDir "$PROGRAMFILES\Chrome Hardware Bridge"
 
 ; Request application privileges for Windows Vista
 RequestExecutionLevel admin
@@ -50,13 +50,13 @@ Section "Host (required)"
   ExecWait "$INSTDIR\host\install_host.bat"
   
   ; Write the installation path into the registry
-  WriteRegStr HKLM "SOFTWARE\Chrome Hardware Extension" "Install_Dir" "$INSTDIR"
+  WriteRegStr HKLM "SOFTWARE\Chrome Hardware Bridge" "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "DisplayName" "Chrome Hardware Extension"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension" "NoRepair" 1
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Bridge" "DisplayName" "Chrome Hardware Bridge"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Bridge" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Bridge" "NoModify" 1
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Bridge" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
   
 SectionEnd
@@ -153,7 +153,7 @@ SubSection /e "Google Chrome and Extension"
   Section "Chrome Extension"
     SectionIn 1 2
   
-    !define PRODUCT_VERSION "1.0.0"
+    !define PRODUCT_VERSION "1.1.2"
     !define CRXNAME "fnfkcaeloalplnglklappfjfjeafakeo_main.crx"
     !define CRXID "fnfkcaeloalplnglklappfjfjeafakeo"
 
@@ -186,8 +186,8 @@ SubSectionEnd
 Section "Uninstall"
   
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Extension"
-  DeleteRegKey HKLM "SOFTWARE\Chrome Hardware Extension"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Bridge"
+  DeleteRegKey HKLM "SOFTWARE\Chrome Hardware Bridge"
 
   DeleteRegValue HKLM "Software\Google\Chrome\Extensions\${CRXID}" "path"
   DeleteRegValue HKLM "Software\Google\Chrome\Extensions\${CRXID}" "version"
