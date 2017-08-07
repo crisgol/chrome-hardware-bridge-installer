@@ -62,16 +62,16 @@ Section "Host (required)"
 SectionEnd
 
 SubSection /e "Python and Dependencies"
-  Section "Python 2.7.11"
+  Section "Python 2.7.13"
     SectionIn 1 2 3
   
     ; Set output path to the installation directory.
     SetOutPath $TEMP
     
     ; Put file there
-    File "dist\python-2.7.11.msi"
+    File "dist\python-2.7.13.msi"
 
-    ExecWait "msiexec /i python-2.7.11.msi /qb ADDLOCAL=ALL"
+    ExecWait "msiexec /i python-2.7.13.msi /qb ADDLOCAL=ALL"
   SectionEnd
 
   Section "Python pip"
@@ -81,9 +81,9 @@ SubSection /e "Python and Dependencies"
     SetOutPath $TEMP
     
     ; Put file there
-    File "dist\pip-8.1.1-py2.py3-none-any.whl"
+    File "dist\pip-9.0.1-py2.py3-none-any.whl"
 
-    ExecWait "C:\Python27\python -m pip install --upgrade pip-8.1.1-py2.py3-none-any.whl"
+    ExecWait "C:\Python27\python -m pip install --upgrade pip-9.0.1-py2.py3-none-any.whl"
   SectionEnd
   
   Section "Python wxpython"
@@ -109,32 +109,6 @@ SubSection /e "Python and Dependencies"
 
     ExecWait "C:\Python27\Scripts\pip.exe install pypiwin32-219-cp27-none-win32.whl"
   SectionEnd
-
-  Section "Python pdfkit"
-    SectionIn 1 2 3
-  
-    ; Set output path to the installation directory.
-    SetOutPath $TEMP
-    
-    ; Put file there
-    File "dist\pdfkit-0.5.0-py2-none-any.whl"
-
-    ExecWait "C:\Python27\Scripts\pip.exe install pdfkit-0.5.0-py2-none-any.whl"
-  SectionEnd
-
-  Section "wkhtmltopdf"
-    SectionIn 1 2 3
-  
-    ; Set output path to the installation directory.
-    SetOutPath $TEMP
-    
-    ; Put file there
-    File "dist\wkhtmltox-0.12.3.2_msvc2013-win32.exe"
-
-    ExecWait "$TEMP\wkhtmltox-0.12.3.2_msvc2013-win32.exe /S"
-    
-    ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$PROGRAMFILES\wkhtmltopdf\bin"
-  SectionEnd
 SubSectionEnd
   
 SubSection /e "Google Chrome and Extension"
@@ -153,7 +127,7 @@ SubSection /e "Google Chrome and Extension"
   Section "Chrome Extension"
     SectionIn 1 2
   
-    !define PRODUCT_VERSION "1.1.2"
+    !define PRODUCT_VERSION "1.1.3"
     !define CRXNAME "fnfkcaeloalplnglklappfjfjeafakeo_main.crx"
     !define CRXID "fnfkcaeloalplnglklappfjfjeafakeo"
 
