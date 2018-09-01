@@ -1,0 +1,6 @@
+[submodule "host"]
+	path = host
+	url = git@bitbucket.org:tiger-workshop/chrome-hardware-bridge-host.git
+[submodule "app"]
+	path = app
+	url = git@bitbucket.org:tiger-workshop/chrome-hardware-bridge-app.git
