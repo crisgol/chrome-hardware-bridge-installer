@@ -1,7 +1,5 @@
 ; install.nsi
 
-!include "EnvVarUpdate.nsh"
-
 ;--------------------------------
 
 ; The name of the installer
@@ -30,14 +28,9 @@ UninstPage instfiles
 ;--------------------------------
 
 InstType "Full Installation"
-InstType "Host, Dependencies and Extension Only"
-InstType "Host and Dependencies Only"
-InstType "Host Only"
 
-
-Section "Host (required)"
-
-  SectionIn RO
+Section "Host"
+  SectionIn 1 2
   
   ; Set output path to the installation directory.
   SetOutPath $INSTDIR
@@ -62,44 +55,44 @@ Section "Host (required)"
 SectionEnd
 
 SubSection /e "Python and Dependencies"
-  Section "Python 2.7.13"
-    SectionIn 1 2 3
+  Section "Python 2.7.15"
+    SectionIn 1 2
   
     ; Set output path to the installation directory.
     SetOutPath $TEMP
     
     ; Put file there
-    File "dist\python-2.7.13.msi"
+    File "dist\python-2.7.15.msi"
 
-    ExecWait "msiexec /i python-2.7.13.msi /qb ADDLOCAL=ALL"
+    ExecWait "msiexec /i python-2.7.15.msi /qb ADDLOCAL=ALL"
   SectionEnd
 
   Section "Python pip"
-    SectionIn 1 2 3
+    SectionIn 1 2
   
     ; Set output path to the installation directory.
     SetOutPath $TEMP
     
     ; Put file there
-    File "dist\pip-9.0.1-py2.py3-none-any.whl"
+    File "dist\pip-18.0-py2.py3-none-any.whl"
 
-    ExecWait "C:\Python27\python -m pip install --upgrade pip-9.0.1-py2.py3-none-any.whl"
+    ExecWait "C:\Python27\python -m pip install --upgrade pip-18.0-py2.py3-none-any.whl"
   SectionEnd
   
   Section "Python wxpython"
-    SectionIn 1 2 3
+    SectionIn 1 2
   
     ; Set output path to the installation directory.
     SetOutPath $TEMP
     
     ; Put file there
-    File "dist\wxPython_Phoenix-3.0.3.dev1964+f780b21-cp27-cp27m-win32.whl"
+    File "dist\wxPython-4.0.3-cp27-cp27m-win32.whl"
 
-    ExecWait "C:\Python27\Scripts\pip.exe install wxPython_Phoenix-3.0.3.dev1964+f780b21-cp27-cp27m-win32.whl"
+    ExecWait "C:\Python27\Scripts\pip.exe install wxPython-4.0.3-cp27-cp27m-win32.whl"
   SectionEnd
   
   Section "Python pypiwin32"
-    SectionIn 1 2 3
+    SectionIn 1 2
   
     ; Set output path to the installation directory.
     SetOutPath $TEMP
@@ -110,49 +103,7 @@ SubSection /e "Python and Dependencies"
     ExecWait "C:\Python27\Scripts\pip.exe install pypiwin32-219-cp27-none-win32.whl"
   SectionEnd
 SubSectionEnd
-  
-SubSection /e "Google Chrome and Extension"
-  Section "Google Chrome"
-    SectionIn 1
-  
-    ; Set output path to the installation directory.
-    SetOutPath $TEMP
-    
-    ; Put file there
-    File "dist\googlechromestandaloneenterprise.msi"
 
-    ExecWait "msiexec /i googlechromestandaloneenterprise.msi"
-  SectionEnd
-
-  Section "Chrome Extension"
-    SectionIn 1 2
-  
-    !define PRODUCT_VERSION "1.1.3"
-    !define CRXNAME "fnfkcaeloalplnglklappfjfjeafakeo_main.crx"
-    !define CRXID "fnfkcaeloalplnglklappfjfjeafakeo"
-
-    SetOutPath "$INSTDIR\app"
-    File "app\${CRXNAME}"
-    WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\${CRXNAME}"
-    WriteRegStr HKLM "Software\Google\Chrome\Extensions\${CRXID}" "version"     "${PRODUCT_VERSION}"
-    WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "path" "$INSTDIR\app\${CRXNAME}"
-    WriteRegStr HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "version" "${PRODUCT_VERSION}"
-  SectionEnd
-SubSectionEnd
-
-SubSection /e "Adobe Reader"
-  Section "Adobe Reader XI"
-    SectionIn 1
-  
-    ; Set output path to the installation directory.
-    SetOutPath $TEMP
-    
-    ; Put file there
-    File "dist\AdbeRdr11000_zh_TW.exe"
-
-    ExecWait "AdbeRdr11000_zh_TW.exe /msi EULA_ACCEPT=YES UPDATE_MODE=0 /qn"
-  SectionEnd
-SubSectionEnd
 ;--------------------------------
 
 ; Uninstaller
@@ -162,11 +113,6 @@ Section "Uninstall"
   ; Remove registry keys
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Chrome Hardware Bridge"
   DeleteRegKey HKLM "SOFTWARE\Chrome Hardware Bridge"
-
-  DeleteRegValue HKLM "Software\Google\Chrome\Extensions\${CRXID}" "path"
-  DeleteRegValue HKLM "Software\Google\Chrome\Extensions\${CRXID}" "version"
-  DeleteRegValue HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "path"
-  DeleteRegValue HKLM "Software\Wow6432Node\Google\Chrome\Extensions\${CRXID}" "version"
   
   ExecWait "$INSTDIR\host\uninstall_host.bat"
   
